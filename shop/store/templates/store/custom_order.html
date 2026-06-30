@@ -1,0 +1,75 @@
+{% extends "store/base.html" %}
+
+{% block title %}{{ product.name }} — Shop{% endblock %}
+
+{% block content %}
+<a href="{% url 'product_list' %}" class="back-link">&larr; Back to products</a>
+
+<div class="custom-form-wrap">
+    <h1 class="detail-title">{{ product.name }}</h1>
+    <p class="detail-desc">{{ product.description }}</p>
+
+    {% if errors %}
+    <div class="form-errors">
+        {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="custom-form">
+        {% csrf_token %}
+
+        <label class="field-label">Custom type <span class="req">*</span></label>
+        <div class="type-options">
+            {% for type in types %}
+            <label class="type-option">
+                <input type="radio" name="custom_type" value="{{ type.id }}"
+                       {% if submitted.custom_type == type.id|stringformat:'s' %}checked{% elif type.is_default and not submitted %}checked{% endif %}>
+                <span class="type-card">
+                    <strong>{{ type.name }}</strong>
+                    <span class="type-price">{{ type.price_display }}</span>
+                </span>
+            </label>
+            {% endfor %}
+        </div>
+
+        <label class="field-label">Name your custom order <span class="req">*</span></label>
+        <input type="text" name="custom_name" class="text-input"
+               value="{{ submitted.custom_name|default:'' }}" placeholder="e.g. Mountain canvas for lounge" required>
+
+        <label class="field-label">Size <span class="req">*</span></label>
+        <div class="size-row">
+            <input type="number" step="0.01" min="0" name="length" class="text-input size-input"
+                   value="{{ submitted.length|default:'' }}" placeholder="Length" required>
+            <span class="size-x">×</span>
+            <input type="number" step="0.01" min="0" name="width" class="text-input size-input"
+                   value="{{ submitted.width|default:'' }}" placeholder="Width" required>
+            <select name="measurement_unit" class="text-input unit-select" required>
+                <option value="">Unit</option>
+                <option value="mm" {% if submitted.measurement_unit == 'mm' %}selected{% endif %}>mm</option>
+                <option value="cm" {% if submitted.measurement_unit == 'cm' %}selected{% endif %}>cm</option>
+                <option value="m" {% if submitted.measurement_unit == 'm' %}selected{% endif %}>m</option>
+                <option value="in" {% if submitted.measurement_unit == 'in' %}selected{% endif %}>inches</option>
+                <option value="ft" {% if submitted.measurement_unit == 'ft' %}selected{% endif %}>feet</option>
+            </select>
+        </div>
+
+        <label class="field-label">Colour <span class="req">*</span></label>
+        <div class="colour-swatches">
+            {% for colour in colours %}
+            <label class="swatch" title="{{ colour.name }}">
+                <input type="radio" name="colour" value="{{ colour.id }}"
+                       {% if submitted.colour == colour.id|stringformat:'s' %}checked{% endif %} required>
+                <span class="swatch-dot" style="background: {{ colour.hex_value }};"></span>
+                <span class="swatch-name">{{ colour.name }}</span>
+            </label>
+            {% endfor %}
+        </div>
+
+        <label class="field-label">Notes <span class="optional">(optional)</span></label>
+        <textarea name="notes" class="text-input" rows="3"
+                  placeholder="Anything else we should know?">{{ submitted.notes|default:'' }}</textarea>
+
+        <button type="submit" class="btn-primary custom-submit">Add custom order to cart</button>
+    </form>
+</div>
+{% endblock %}

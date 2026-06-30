@@ -1,0 +1,55 @@
+{% extends "store/base.html" %}
+
+{% block title %}Your Cart — Shop{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Your Cart</h1>
+
+{% if items %}
+<div class="cart">
+    {% for item in items %}
+    <div class="cart-row">
+        <div class="cart-info">
+            <h2 class="cart-name">{{ item.product.name }}</h2>
+            {% if item.product.product_type == "custom" %}
+                <span class="badge">Custom order</span>
+            {% endif %}
+            <p class="cart-meta">Qty: {{ item.quantity }} &times; {{ item.product.price_display }}</p>
+        </div>
+        <div class="cart-line">
+            <span class="cart-line-total">{{ item.line_total }}</span>
+            <div class="qty-controls">
+                <form method="post" action="{% url 'remove_from_cart' item.product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="qty-btn" title="Remove one">&minus;</button>
+                </form>
+                <span class="qty-num">{{ item.quantity }}</span>
+                <form method="post" action="{% url 'add_to_cart' item.product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="qty-btn" title="Add one">+</button>
+                </form>
+                <form method="post" action="{% url 'remove_all_from_cart' item.product.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-remove" title="Remove all">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+
+<div class="cart-total">
+        <span>Total</span>
+        <span>{{ total }}</span>
+    </div>
+
+    <form method="post" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary checkout-btn">Place order</button>
+    </form>
+
+
+{% else %}
+<p class="empty">Your cart is empty. <a href="{% url 'product_list' %}">Browse products</a>.</p>
+{% endif %}
+{% endblock %}

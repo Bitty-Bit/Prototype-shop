@@ -1,0 +1,29 @@
+{% extends "store/base.html" %}
+
+{% block title %}Order #{{ order.pk }} — Shop{% endblock %}
+
+{% block content %}
+<a href="{% url 'account' %}" class="back-link">&larr; Back to my account</a>
+
+<div class="detail">
+    <h1 class="detail-title">Order #{{ order.pk }}</h1>
+    <p><span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span></p>
+    <p class="detail-desc">Placed {{ order.created_at|date:"j M Y, H:i" }}</p>
+
+    {% if order.has_custom_items %}
+        <p class="confirm-note">This order includes custom items, made to order.</p>
+    {% endif %}
+
+    <h2 class="confirm-sub">Items</h2>
+    <ul class="confirm-items">
+        {% for item in order.items.all %}
+        <li>{{ item.quantity }} × {{ item.product_name }} — {{ item.unit_price_display }} each ({{ item.line_total_display }})</li>
+        {% endfor %}
+    </ul>
+
+    <div class="cart-total">
+        <span>Total</span>
+        <span>{{ order.total_display }}</span>
+    </div>
+</div>
+{% endblock %}

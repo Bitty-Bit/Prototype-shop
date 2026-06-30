@@ -1,0 +1,48 @@
+{% extends "store/base.html" %}
+
+{% block title %}{{ product.name }} — Shop{% endblock %}
+
+{% block content %}
+<a href="{% url 'product_list' %}" class="back-link">&larr; Back to products</a>
+
+<div class="detail">
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-img">
+    {% else %}
+        <div class="detail-img placeholder">No image</div>
+    {% endif %}
+    {% if product.product_type == "custom" %}
+        <span class="badge">Custom order</span>
+    {% endif %}
+    <h1 class="detail-title">{{ product.name }}</h1>
+    <p class="detail-price">{{ product.price_display }}</p>
+
+    {% if product.description %}
+        <p class="detail-desc">{{ product.description }}</p>
+    {% endif %}
+
+    {% if not product.is_active %}
+        <p class="stock out">This product is currently unavailable</p>
+    {% elif product.product_type == "stock" %}
+        {% if product.stock_quantity > 0 %}
+            <p class="stock in">In stock — {{ product.stock_quantity }} available</p>
+        {% else %}
+            <p class="stock out">Out of stock</p>
+        {% endif %}
+    {% else %}
+        <p class="stock custom-note">Made to order — lead time applies</p>
+    {% endif %}
+
+    {% if product.is_available %}
+        <form method="post" action="{% url 'add_to_cart' product.pk %}" class="ajax-add">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">Add to cart</button>
+        </form>
+    {% else %}
+        <button class="btn-primary" disabled>
+            {% if not product.is_active %}Unavailable{% else %}Out of stock{% endif %}
+        </button>
+    {% endif %}
+    </form>
+</div>
+{% endblock %}

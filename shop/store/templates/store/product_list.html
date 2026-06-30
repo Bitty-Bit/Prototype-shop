@@ -1,0 +1,54 @@
+{% extends "store/base.html" %}
+
+{% block title %}Products — Shop{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Our Products</h1>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="card-wrap">
+        <a href="{% url 'product_detail' product.pk %}" class="card {% if product.is_pinned %}card-pinned{% endif %}">
+            <div class="card-top">
+                <span class="badge {% if product.product_type == 'custom' %}badge-custom{% else %}badge-stock{% endif %}">
+                    {% if product.product_type == "custom" %}Custom order{% else %}Stock{% endif %}
+                </span>
+                <span class="status-dot {% if product.is_active %}active{% else %}inactive{% endif %}"
+                      title="{% if product.is_active %}Active{% else %}Inactive{% endif %}"></span>
+            </div>
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+            {% else %}
+                <div class="card-img placeholder">No image</div>
+            {% endif %}
+
+            <h2 class="card-title">{{ product.name }}</h2>
+            <p class="card-desc">{{ product.description }}</p>
+            <p class="card-price">{{ product.price_display }}</p>
+
+            {% if not product.is_available %}
+            <p class="card-unavailable">
+                {% if not product.is_active %}Unavailable{% else %}Out of stock{% endif %}
+            </p>
+            {% endif %}
+        </a>
+
+        {% if product.is_available %}
+        <form method="post" action="{% url 'add_to_cart' product.pk %}" class="card-add-form ajax-add">
+            {% csrf_token %}
+            <button type="submit" class="card-add-btn" title="Add to cart" aria-label="Add to cart">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p class="empty">No products yet. Add some in the admin panel.</p>
+    {% endfor %}
+</div>
+{% endblock %}  

@@ -1,0 +1,27 @@
+{% extends "store/base.html" %}
+
+{% block title %}My Account — Shop{% endblock %}
+
+{% block content %}
+<h1 class="page-title">My Account</h1>
+<p>Welcome, <strong>{{ user.username }}</strong>.</p>
+
+{% if orders %}
+<div class="orders">
+    {% for order in orders %}
+    <a href="{% url 'order_detail' order.pk %}" class="order-row">
+        <div>
+            <strong>Order #{{ order.pk }}</strong>
+            <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+        <div class="order-meta">
+            <span>{{ order.created_at|date:"j M Y" }}</span>
+            <span class="order-total">{{ order.total_display }}</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="account-note">You haven't placed any orders yet. <a href="{% url 'product_list' %}">Start shopping</a>.</p>
+{% endif %}
+{% endblock %}

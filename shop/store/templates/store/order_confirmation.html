@@ -1,0 +1,24 @@
+{% extends "store/base.html" %}
+
+{% block title %}Order Confirmed — Shop{% endblock %}
+
+{% block content %}
+<div class="confirm">
+    <h1 class="page-title">Thank you — order placed</h1>
+    <p class="confirm-num">Order <strong>#{{ order.pk }}</strong></p>
+    <p class="confirm-total">Total: {{ order.total_display }}</p>
+
+    {% if order.has_custom_items %}
+        <p class="confirm-note">Your order includes custom items — these are made to order and will move into production. We'll keep you updated on the lead time.</p>
+    {% endif %}
+
+    <h2 class="confirm-sub">Items</h2>
+    <ul class="confirm-items">
+        {% for item in order.items.all %}
+        <li>{{ item.quantity }} × {{ item.product_name }} — {{ item.unit_price_display }} each ({{ item.line_total_display }})</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'product_list' %}" class="btn-primary">Continue shopping</a>
+</div>
+{% endblock %}
