@@ -53,17 +53,17 @@
             </select>
         </div>
 
-        <label class="field-label">Colour <span class="req">*</span></label>
+        <label class="field-label">Colours <span class="req">*</span> <span class="optional">(pick 1–5)</span></label>
         <div class="colour-swatches">
             {% for colour in colours %}
             <label class="swatch" title="{{ colour.name }}">
-                <input type="radio" name="colour" value="{{ colour.id }}"
-                       {% if submitted.colour == colour.id|stringformat:'s' %}checked{% endif %} required>
+                <input type="checkbox" name="colours" value="{{ colour.id }}" class="swatch-check">
                 <span class="swatch-dot" style="background: {{ colour.hex_value }};"></span>
                 <span class="swatch-name">{{ colour.name }}</span>
             </label>
             {% endfor %}
         </div>
+        <p class="swatch-counter"><span id="colour-count">0</span> / 5 selected</p>
 
         <label class="field-label">Notes <span class="optional">(optional)</span></label>
         <textarea name="notes" class="text-input" rows="3"

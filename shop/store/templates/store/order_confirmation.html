@@ -15,7 +15,21 @@
     <h2 class="confirm-sub">Items</h2>
     <ul class="confirm-items">
         {% for item in order.items.all %}
-        <li>{{ item.quantity }} × {{ item.product_name }} — {{ item.unit_price_display }} each ({{ item.line_total_display }})</li>
+        <li>
+            {{ item.quantity }} × {{ item.product_name }} — {{ item.unit_price_display }} each ({{ item.line_total_display }})
+            {% if item.custom_type %}
+            <div class="confirm-custom">
+                <span class="badge badge-custom">{{ item.custom_type.name }}</span>
+                {% if item.size_display %}<span class="confirm-spec">Size: {{ item.size_display }}</span>{% endif %}
+                {% if item.colours.all %}
+                <span class="confirm-spec">Colours:
+                    {% for c in item.colours.all %}<span class="mini-swatch" style="background: {{ c.hex_value }};" title="{{ c.name }}"></span>{% endfor %}
+                </span>
+                {% endif %}
+                {% if item.images.all %}<span class="confirm-spec">{{ item.images.all|length }} image(s) uploaded</span>{% endif %}
+            </div>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
 

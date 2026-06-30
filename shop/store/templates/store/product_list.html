@@ -34,7 +34,7 @@
             {% endif %}
         </a>
 
-        {% if product.is_available %}
+       {% if product.is_available and not product.is_custom_order %}
         <form method="post" action="{% url 'add_to_cart' product.pk %}" class="card-add-form ajax-add">
             {% csrf_token %}
             <button type="submit" class="card-add-btn" title="Add to cart" aria-label="Add to cart">

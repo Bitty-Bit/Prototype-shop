@@ -126,12 +126,13 @@ class OrderItem(models.Model):
     colours = models.ManyToManyField("Colour", blank=True)
 
     custom_name = models.CharField(max_length=200, blank=True)   # customer's name for their request
+    custom_type = models.ForeignKey(
+        "CustomType", on_delete=models.SET_NULL, null=True, blank=True
+    )
+
     length = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     width = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     measurement_unit = models.CharField(max_length=10, blank=True)  # mm, cm, m, in, ft
-    colour = models.ForeignKey(
-        "Colour", on_delete=models.SET_NULL, null=True, blank=True
-    )
     notes = models.TextField(blank=True)
 
     def __str__(self):
@@ -160,7 +161,10 @@ class OrderItem(models.Model):
         return ", ".join(c.name for c in self.colours.all())
     
 
-
+    @property
+    def colours_display(self):
+        return ", ".join(c.name for c in self.colours.all())
+    
 class CustomOrderImage(models.Model):
     order_item = models.ForeignKey(OrderItem, related_name="images", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="custom_orders/")
@@ -169,3 +173,4 @@ class CustomOrderImage(models.Model):
     def __str__(self):
         return f"Image for {self.order_item}"
     
+

@@ -1,0 +1,43 @@
+{% extends "store/base.html" %}
+
+{% block title %}Upload Reference Images — Shop{% endblock %}
+
+{% block content %}
+<a href="{% url 'cart_detail' %}" class="back-link">&larr; Back to cart</a>
+
+<h1 class="page-title">Upload your reference images</h1>
+
+<div class="upload-intro">
+    <p>Your custom orders need reference images so we know exactly what to make.
+    Please upload a photo or picture for each custom item below.</p>
+    <ul>
+        <li>Each image must be under <strong>10 MB</strong>.</li>
+        <li>We'll automatically resize large images — your detail is kept.</li>
+        <li>The number needed depends on the item (shown below each one).</li>
+    </ul>
+</div>
+
+{% if errors %}
+<div class="form-errors">
+    {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="upload-form">
+    {% csrf_token %}
+
+    {% for item in custom_items %}
+    <div class="upload-block">
+        <h2 class="upload-name">{{ item.name }} <span class="badge badge-custom">{{ item.type.name }}</span></h2>
+        <p class="upload-rule">
+            Upload between <strong>{{ item.type.min_images }}</strong> and
+            <strong>{{ item.type.max_images }}</strong> image{{ item.type.max_images|pluralize }}
+            for this item.
+        </p>
+        <input type="file" name="images_{{ item.index }}" accept="image/*" multiple class="upload-input" required>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn-primary upload-submit">Place order</button>
+</form>
+{% endblock %}

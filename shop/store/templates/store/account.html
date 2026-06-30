@@ -9,7 +9,7 @@
 {% if orders %}
 <div class="orders">
     {% for order in orders %}
-    <a href="{% url 'order_detail' order.pk %}" class="order-row">
+    <a href="#" class="order-row js-order" data-order="{{ order.pk }}">
         <div>
             <strong>Order #{{ order.pk }}</strong>
             <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
@@ -24,4 +24,11 @@
 {% else %}
 <p class="account-note">You haven't placed any orders yet. <a href="{% url 'product_list' %}">Start shopping</a>.</p>
 {% endif %}
+
+<div class="modal-overlay" id="order-modal">
+    <div class="modal">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div id="modal-body"></div>
+    </div>
+</div>
 {% endblock %}

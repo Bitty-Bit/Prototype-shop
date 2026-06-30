@@ -5,7 +5,7 @@
 {% block content %}
 <h1 class="page-title">Your Cart</h1>
 
-{% if items %}
+{% if items or custom_items %}
 <div class="cart">
     {% for item in items %}
     <div class="cart-row">
@@ -37,6 +37,30 @@
     </div>
     {% endfor %}
     
+{% for item in custom_items %}
+    <div class="cart-row custom-cart-row">
+        <div class="cart-info">
+            <h2 class="cart-name">{{ item.name }}</h2>
+            <span class="badge badge-custom">{{ item.type.name }}</span>
+            <p class="cart-meta">
+                Size: {{ item.length }} × {{ item.width }} {{ item.unit }}<br>
+                Colours:
+                {% for c in item.colours %}
+                    <span class="mini-swatch" style="background: {{ c.hex_value }};" title="{{ c.name }}"></span>
+                {% endfor %}
+                {% if item.notes %}<br>Notes: {{ item.notes }}{% endif %}
+            </p>
+        </div>
+        <div class="cart-line">
+            <span class="cart-line-total">{{ item.line_total }}</span>
+            <form method="post" action="{% url 'remove_custom_item' item.index %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-remove">Remove</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+
 
 <div class="cart-total">
         <span>Total</span>

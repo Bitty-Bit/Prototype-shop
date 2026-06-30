@@ -13,6 +13,11 @@ class CustomTypeAdmin(admin.ModelAdmin):
     list_editable = ("min_images", "max_images", "sort_order", "is_active")
     list_filter = ("is_negotiable", "is_default", "is_active")
 
+class CustomOrderImageInline(admin.TabularInline):
+    model = CustomOrderImage
+    extra = 0
+    readonly_fields = ("image", "uploaded_at")
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
